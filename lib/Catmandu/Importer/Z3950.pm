@@ -59,10 +59,10 @@ sub _get_query {
   my $qry;
 
   if ($self->queryType eq 'CQL') {
-    $qry = new ZOOM::Query::CQL($self->query); # 'title=dinosaur'
+    $qry = ZOOM::Query::CQL->new($self->query); # 'title=dinosaur'
   }
   elsif ($self->queryType eq 'PQF') {
-    $qry = new ZOOM::Query::PQF($self->query); # '@attr 1=4 dinosaur'
+    $qry = ZOOM::Query::PQF->new($self->query); # '@attr 1=4 dinosaur'
   }
 
   return $qry;
