@@ -34,7 +34,7 @@ has queryType => (is =>'ro', default => sub { return QUERYTYPE; }); # <CQL | PQF
 
 # internal stuff.
 has _currentRecordSet => (is => 'ro');
-has _n => (is => 'ro');
+has _n => (is => 'ro', default => sub { 0 });
 
 # Internal Methods. ------------------------------------------------------------
 
@@ -75,7 +75,14 @@ sub _nextRecord {
     $self->{_currentRecordSet} = $self->_setup_connection->search($self->_get_query);
   }
 
-  return $self->_currentRecordSet->record($self->{_n}++)->get("raw");
+  my $size = $self->_currentRecordSet->size() || 0;
+
+  if ($self->{_n} < $size) {
+    return $self->_currentRecordSet->record($self->{_n}++)->get("raw");
+  }
+  else {
+    return undef;
+  }
 }
 
 

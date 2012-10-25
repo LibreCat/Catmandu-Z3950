@@ -1,5 +1,12 @@
 Catmandu-Z3950
 
+Required
+
+  yaz
+    
+    - RedHat: yum install yaz libyaz libyaz-devel
+    - OSX: brew install yaz
+
 Installation
 
 To install this module, run the following commands:
