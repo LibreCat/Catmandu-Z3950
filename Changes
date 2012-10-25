@@ -5,3 +5,6 @@ Revision history for Catmandu-Z3950
 
 0.02    2012-10-25
   - fixed end-of-resultset bug
+
+0.03    2012-10-25
+  - fixed server connection bug

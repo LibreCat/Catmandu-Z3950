@@ -6,17 +6,14 @@ use ZOOM;
 
 with 'Catmandu::Importer';
 
-
 # INFO:
 # http://www.loc.gov/z3950/
-
 
 # Constants. -------------------------------------------------------------------
 
 use constant PREFERREDRECORDSYNTAX => 'USMARC';
 use constant PORT => 210;
 use constant QUERYTYPE => 'CQL';
-
 
 # Properties. ------------------------------------------------------------------
 
@@ -33,6 +30,7 @@ has password => (is => 'ro');
 has queryType => (is =>'ro', default => sub { return QUERYTYPE; }); # <CQL | PQF>
 
 # internal stuff.
+has _conn => (is => 'ro');
 has _currentRecordSet => (is => 'ro');
 has _n => (is => 'ro', default => sub { 0 });
 
@@ -72,7 +70,8 @@ sub _nextRecord {
   my ($self) = @_;
   
   unless ($self->_currentRecordSet) {
-    $self->{_currentRecordSet} = $self->_setup_connection->search($self->_get_query);
+    $self->{_conn}             = $self->_setup_connection;
+    $self->{_currentRecordSet} = $self->{_conn}->search($self->_get_query);
   }
 
   my $size = $self->_currentRecordSet->size() || 0;
@@ -82,6 +81,14 @@ sub _nextRecord {
   }
   else {
     return undef;
+  }
+}
+
+sub DESTROY {
+  my ($self) = @_;
+  
+  if ($self->_conn) {
+     $self->_conn->destroy();
   }
 }
 
