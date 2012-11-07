@@ -16,6 +16,7 @@ my $num;
 my $help;
 my $query;
 my $sleep;
+my $verbose;
 
 GetOptions( "h"        => \$help ,
             "host=s"   => \$host , 
@@ -24,6 +25,7 @@ GetOptions( "h"        => \$help ,
             "syntax=s" => \$preferredRecordSyntax ,
             "type=s"   => \$queryType ,
             "sleep=i"  => \$sleep ,
+	    "verbose"  => \$verbose ,
             "num=i"    => \$num);
 
 &usage if $help;
@@ -57,6 +59,8 @@ else {
                     preferredRecordSyntax => $preferredRecordSyntax ,
                     queryType => $queryType ,
                     query => $query);
+
+       print STDERR "executing: $prefix\t$query\n" if $verbose;
 
        $importer->slice(0,$num)->each(sub {
             process_record($prefix,$_[0]);
