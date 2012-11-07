@@ -62,7 +62,7 @@ else {
             process_record($prefix,$_[0]);
        });
 
-       Time::HiRes::usleep($sleep) if $sleep;
+       sleep($sleep) if $sleep;
    }
 }
 
@@ -115,7 +115,7 @@ options:
    --syntax=$preferredRecordSyntax
    --type=$queryType
    --num=<max_number_of_records>
-   --sleep=<micro_seconds>
+   --sleep=<seconds>
    --prefix=$prefix
 
 example:
