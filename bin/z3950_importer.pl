@@ -40,7 +40,10 @@ if (@ARGV) {
                     queryType => $queryType ,
                     query => $query);
 
-    my $n = $importer->slice(0,$num)->each(\&process_record);
+    my $n = $importer->slice(0,$num)->each(sub {
+	    process_record(0,$_[0]);
+    });
+
     print STDERR "processed: $n record\n";
 }
 else {
@@ -123,6 +126,11 @@ example:
    query: \@attr 1=8 0028-0836 (search for 0028-0836 in ISSN)
 
    Use: http://www.loc.gov/z3950/lcdbz3950.xml for more options 
+
+usage:
+
+   $0 "\@attr 1=7 9781615300068"
+   $0 < example.txt
 EOF
    exit 1;
 }
