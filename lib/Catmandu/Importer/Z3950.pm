@@ -20,7 +20,7 @@ use constant QUERYTYPE => 'CQL';
 # required.
 has host => (is => 'ro', required => 1);
 has databaseName => (is => 'ro', required => 1);
-has query => (is => 'ro', required => 1);
+has query => (is => 'rw');
 
 # optional.
 has port => (is => 'ro', default => sub { return PORT; });
@@ -31,6 +31,7 @@ has queryType => (is =>'ro', default => sub { return QUERYTYPE; }); # <CQL | PQF
 
 # internal stuff.
 has _conn => (is => 'ro');
+has _qry => (is => 'ro');
 has _currentRecordSet => (is => 'ro');
 has _n => (is => 'ro', default => sub { 0 });
 
@@ -68,10 +69,20 @@ sub _get_query {
 
 sub _nextRecord {
   my ($self) = @_;
-  
+ 
+  unless ($self->_conn) {
+    $self->_clean;
+    $self->{_conn} = $self->_setup_connection;
+  } 
+
+  unless ($self->_qry) {
+    $self->_clean;
+    $self->{_qry} = $self->_get_query;
+  }
+
   unless ($self->_currentRecordSet) {
-    $self->{_conn}             = $self->_setup_connection;
-    $self->{_currentRecordSet} = $self->{_conn}->search($self->_get_query);
+    $self->{_currentRecordSet} = $self->{_conn}->search($self->{_qry});
+    $self->{_n} = 0;
   }
 
   my $size = $self->_currentRecordSet->size() || 0;
@@ -80,8 +91,18 @@ sub _nextRecord {
     return $self->_currentRecordSet->record($self->{_n}++)->get("raw");
   }
   else {
+    $self->_clean;
     return undef;
   }
+}
+
+sub _clean {
+   my ($self) = @_;
+   $self->{_currentRecordSet}->destroy() if $self->{_currentRecordSet};
+   $self->{_qry}->destroy() if $self->{_qry};
+   $self->{_currentRecordSet} = undef;
+   $self->{_qry} = undef;
+   $self->{_n} = 0;
 }
 
 sub DESTROY {

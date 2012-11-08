@@ -6,6 +6,16 @@ Required
     
     - RedHat: yum install yaz libyaz libyaz-devel
     - OSX: brew install yaz
+  
+  tcp_wrappers
+
+    - RedHat: yum install tcp_wrappers tcp_wrappers-devel
+
+  ZOOM:
+    (The ZOOM package contains a test on a Z39.50 target that isn't responding and need to be installed brute force)
+
+    - cpan
+    - force install ZOOM
 
 Installation
 

@@ -5,7 +5,6 @@ use Catmandu::Importer::Z3950;
 use Data::Dumper;
 use MARC::Record;
 use Getopt::Long;
-use Time::HiRes;
 
 my $host = 'lx2.loc.gov';
 my $port = 210;
@@ -25,7 +24,7 @@ GetOptions( "h"        => \$help ,
             "syntax=s" => \$preferredRecordSyntax ,
             "type=s"   => \$queryType ,
             "sleep=i"  => \$sleep ,
-	    "verbose"  => \$verbose ,
+	        "verbose"  => \$verbose ,
             "num=i"    => \$num);
 
 &usage if $help;
@@ -34,13 +33,9 @@ binmode(STDOUT,':encoding(UTF-8)');
 
 if (@ARGV) {
     my $query = shift;
-    my $importer = Catmandu::Importer::Z3950->new(
-                    host => $host ,
-                    port => $port ,
-                    databaseName => $databaseName ,
-                    preferredRecordSyntax => $preferredRecordSyntax ,
-                    queryType => $queryType ,
-                    query => $query);
+
+    my $importer = &importer;
+    $importer->query($query);
 
     my $n = $importer->slice(0,$num)->each(sub {
 	    process_record(0,$_[0]);
@@ -49,25 +44,53 @@ if (@ARGV) {
     print STDERR "processed: $n record\n";
 }
 else {
+   my $count = 0;
+   my $results = 0;
+   my $importer = &importer;
+
    while (<STDIN>) {
        chomp;
        my ($prefix,$query) = split(/\s+/,$_,2);
-       my $importer = Catmandu::Importer::Z3950->new(
+       my $n;
+    
+       my $error = 0; 
+       do {
+            $importer->query($query);
+
+            $count++;
+            print STDERR "executing: $prefix\t$query hits: " if $verbose;
+
+            eval {
+                $n = $importer->slice(0,$num)->each(sub {
+                    process_record($prefix,$_[0]);
+                });
+            };
+       
+            if ($@) {
+                print STDERR "caught: $@ sleeping 10 seconds " if $verbose;  
+                sleep 10;
+                $n = 0;
+                print STDERR "reconnecting " if $verbose;
+                $importer = &importer;
+            }
+            else { $error = 0 }
+       } while ($error == 1);
+
+       $results += 1 if $n > 0;
+     
+       printf STDERR "$n queries with results: $results/$count %-3.1f %%\n", 100 * $results/$count if $verbose;
+
+       sleep($sleep) if $sleep;
+   }
+}
+
+sub importer {
+   return Catmandu::Importer::Z3950->new(
                     host => $host ,
                     port => $port ,
                     databaseName => $databaseName ,
                     preferredRecordSyntax => $preferredRecordSyntax ,
-                    queryType => $queryType ,
-                    query => $query);
-
-       print STDERR "executing: $prefix\t$query\n" if $verbose;
-
-       $importer->slice(0,$num)->each(sub {
-            process_record($prefix,$_[0]);
-       });
-
-       sleep($sleep) if $sleep;
-   }
+                    queryType => $queryType);
 }
 
 sub process_record {
