@@ -6,18 +6,28 @@ use Data::Dumper;
 use MARC::Record;
 use Getopt::Long;
 
-my $host = 'lx2.loc.gov';
-my $port = 210;
-my $databaseName = 'lcdb';
-my $preferredRecordSyntax = 'USMARC';
-my $queryType = 'PQF';
+my $host;
+my $port;
+my $databaseName;
+my $preferredRecordSyntax;
+my $queryType;
+my $user;
+my $password;
 my $num;
 my $help;
 my $query;
 my $sleep;
 my $verbose;
+my $conf = 'loc';
+
+my $std_conf = {
+  'loc'     => { host => 'lx2.loc.gov' , port => 210 , databaseName => 'lcdb' , preferredRecordSyntax => 'USMARC' , queryType => 'PQF'} ,
+  'ugent'   => { host => 'aleph.ugent.be' , port => 9991 , databaseName => 'RUG01' , preferredRecordSyntax => 'USMARC' , queryType => 'PQF'} ,
+  'innopac' => { host => 'library.anu.edu.au' , port => 210 , databaseName => 'INNOPAC' , preferredRecordSyntax => 'USMARC' , queryType => 'PQF'} ,
+};
 
 GetOptions( "h"        => \$help ,
+            "conf=s"   => \$conf ,
             "host=s"   => \$host , 
             "port=i"   => \$port ,
             "base=s"   => \$databaseName ,
@@ -25,6 +35,8 @@ GetOptions( "h"        => \$help ,
             "type=s"   => \$queryType ,
             "sleep=i"  => \$sleep ,
 	        "verbose"  => \$verbose ,
+            "user"     => \$user ,
+            "password" => \$password ,
             "num=i"    => \$num);
 
 &usage if $help;
@@ -85,12 +97,15 @@ else {
 }
 
 sub importer {
-   return Catmandu::Importer::Z3950->new(
-                    host => $host ,
-                    port => $port ,
-                    databaseName => $databaseName ,
-                    preferredRecordSyntax => $preferredRecordSyntax ,
-                    queryType => $queryType);
+   my $std = $std_conf->{$conf} || {};
+   $std->{host} = $host if $host;
+   $std->{port} = $port if $port;
+   $std->{user} = $user if $user;
+   $std->{password} = $password if $password;
+   $std->{databaseName} = $databaseName if $databaseName;
+   $std->{preferredRecordSyntax} = $preferredRecordSyntax if $preferredRecordSyntax;
+   $std->{queryType} = $queryType if $queryType;
+   return Catmandu::Importer::Z3950->new(%$std);
 }
 
 sub process_record {
@@ -101,8 +116,8 @@ sub process_record {
 
    for my $field ($marc->fields) {
       my $tag  = $field->tag;
-      my $ind1 = $field->indicator(1) || ' ';
-      my $ind2 = $field->indicator(2) || ' ';
+      my $ind1 = $field->indicator(1) // ' ';
+      my $ind2 = $field->indicator(2) // ' ';
 
       printf "%-9.9d %-3.3s%s%s L " , $prefix, $tag, $ind1, $ind2; 
      
@@ -136,8 +151,11 @@ where: file like
 
 options:
    -h 
+   --conf=(loc|ugent)
    --host=$host
    --port=$port
+   --user=XXXX
+   --password=XXXX
    --base=$databaseName
    --syntax=$preferredRecordSyntax
    --type=$queryType
