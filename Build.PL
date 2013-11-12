@@ -18,7 +18,7 @@ my $builder = Module::Build->new(
         'perl' => '5.10.1',
         'Catmandu' => '0.0302',
         'Moo' => '1.000003',
-		'ZOOM' => '1.28'
+		'ZOOM' => 0
     },
     add_to_cleanup => [qw(
         Catmandu-Z3950*
