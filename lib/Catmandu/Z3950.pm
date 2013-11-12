@@ -6,11 +6,11 @@ Catmandu::Z3950 - Catmandu module for working with Z3950 data
 
 =head1 VERSION
 
-Version 0.01
+Version 0.04
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 MODULES
 
@@ -23,6 +23,8 @@ our $VERSION = '0.03';
 =head1 AUTHOR
 
 =over
+
+=item * Patrick Hochstenbach, C<< <patrick.hochstenbach@ugent.be> >>
 
 =item * Wouter Willaert, C<< <wouterw@inuits.eu> >>
 
