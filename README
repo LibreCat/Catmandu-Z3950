@@ -32,3 +32,17 @@ After installing, you can find documentation for this module with the
 perldoc command.
 
   perldoc Catmandu::Z3950
+
+
+AUTHOR
+
+Wouter Willaert
+
+CONTRIBUTORS
+
+Nicolas Steenlant
+Patrick Hochstenbach
+
+MAINTAINER
+
+Christian Pietsch <cpietsch+librecat at uni-bielefeld.de>
