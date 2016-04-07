@@ -131,9 +131,6 @@ sub generator {
 
   Catmandu::Importer::Z3950 - Package that imports Z3950 data
 
-  Returns the raw response. So the output depends on the preferredRecordSyntax.
-  You could use the MARC::Record package to parse the MARC output blob.
-
 =head1 SYNOPSIS
 
   use Catmandu::Importer::Z3950;
@@ -162,6 +159,10 @@ sub generator {
 =cut
 
 =head1 REMARK
+
+Returns the raw response. So the output depends on the preferredRecordSyntax.
+You could use the MARC::Record package to parse the MARC output blob.
+
 
 This package uses the ZOOM package internally.
 For more info visit: http://search.cpan.org/~mirk/Net-Z3950-ZOOM-1.28/lib/ZOOM.pod
