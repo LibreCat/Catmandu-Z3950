@@ -4,6 +4,8 @@ use Catmandu::Sane;
 use Moo;
 use ZOOM;
 
+our $VERSION = '0.04';
+
 with 'Catmandu::Importer';
 
 # INFO:
@@ -173,6 +175,16 @@ For more info about YAZ, visit: https://www.indexdata.com/yaz
 Installing YAZ:
 - (osx, using homebrew): brew install yaz
 - (linux, using yum): yum install yaz libyaz
+
+=head1 AUTHOR
+
+=over
+
+=item * Wouter Willaert, C<< <wouterw@inuits.eu> >>
+
+=item * Patrick Hochstenbach, C<< <patrick.hochstenbach@ugent.be> >>
+
+=back
 
 =head1 SEE ALSO
 

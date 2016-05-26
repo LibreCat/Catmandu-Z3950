@@ -11,3 +11,5 @@ MANIFEST*
 META.*
 MYMETA.*
 Catmandu-Z3950-*
+cpanfile.snapshot
+local

@@ -24,9 +24,9 @@ our $VERSION = '0.04';
 
 =over
 
-=item * Patrick Hochstenbach, C<< <patrick.hochstenbach@ugent.be> >>
-
 =item * Wouter Willaert, C<< <wouterw@inuits.eu> >>
+
+=item * Patrick Hochstenbach, C<< <patrick.hochstenbach@ugent.be> >>
 
 =back
 
