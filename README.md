@@ -6,6 +6,10 @@ Catmandu::Z3950 - Catmandu module for working with Z3950 data
 
 Version 0.04
 
+# SYNOPSIS
+
+    $ catmandu convert Z3950 --host z3950.loc.gov --port 7090 --databaseName Voyager --query "(title = dinosaur)"
+
 # MODULES
 
 - [Catmandu::Importer::Z3950](https://metacpan.org/pod/Catmandu::Importer::Z3950)
