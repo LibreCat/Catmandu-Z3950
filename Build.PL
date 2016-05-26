@@ -24,6 +24,7 @@ my %module_build_args = (
   "recursive_test_files" => 1,
   "requires" => {
     "Catmandu" => ">= 0.94, != 0.9502, != 0.9503",
+    "Catmandu::MARC" => 0,
     "ZOOM" => 0,
     "perl" => "v5.10.1"
   },

@@ -8,6 +8,10 @@ Catmandu::Z3950 - Catmandu module for working with Z3950 data
 
 Version 0.04
 
+=head1 SYNOPSIS
+
+  $ catmandu convert Z3950 --host z3950.loc.gov --port 7090 --databaseName Voyager --query "(title = dinosaur)"
+
 =cut
 
 our $VERSION = '0.04';

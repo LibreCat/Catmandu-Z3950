@@ -180,13 +180,9 @@ sub generator {
 
 =head1 SYNOPSIS
 
-  
   # On the command line
 
-  use Catmandu::Importer::Z3950;
-
   $ catmandu convert Z3950 --host z3950.loc.gov --port 7090 --databaseName Voyager --query "(title = dinosaur)"
-
   
   # From Perl
 
