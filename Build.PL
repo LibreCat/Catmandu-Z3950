@@ -18,7 +18,7 @@ my %module_build_args = (
     "=over"
   ],
   "dist_name" => "Catmandu-Z3950",
-  "dist_version" => "0.04",
+  "dist_version" => "0.05",
   "license" => "perl",
   "module_name" => "Catmandu::Z3950",
   "recursive_test_files" => 1,

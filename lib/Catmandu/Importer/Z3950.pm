@@ -7,7 +7,7 @@ use Carp;
 use Moo;
 use ZOOM;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 with 'Catmandu::Importer';
 

@@ -1,6 +1,8 @@
 Revision history for Catmandu-Z3950
 
 {{$NEXT}}
+
+0.05  2016-05-26 16:02:24 CEST
   - adding support for default MARC parsed output
   - adding support adding Z3950 parser
   - more POD
