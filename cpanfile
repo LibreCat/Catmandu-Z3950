@@ -10,4 +10,5 @@ on 'test', sub {
 };
 
 requires 'Catmandu', '>=0.94,!=0.9502,!=0.9503';
+requires 'Catmandu::MARC', '0';
 requires 'ZOOM' , '0';

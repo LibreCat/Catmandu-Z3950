@@ -1,6 +1,9 @@
 package Catmandu::Importer::Z3950;
 
 use Catmandu::Sane;
+use Catmandu::Util qw(:is);
+use Scalar::Util qw(blessed);
+use Carp;
 use Moo;
 use ZOOM;
 
@@ -30,6 +33,7 @@ has preferredRecordSyntax => (is => 'ro', default => sub { return PREFERREDRECOR
 has user => (is => 'ro');
 has password => (is => 'ro');
 has queryType => (is =>'ro', default => sub { return QUERYTYPE; }); # <CQL | PQF>
+has handler => (is => 'rw', lazy => 1 , builder => 1, coerce => \&_coerce_handler );
 
 # internal stuff.
 has _conn => (is => 'ro');
@@ -38,6 +42,44 @@ has _currentRecordSet => (is => 'ro');
 has _n => (is => 'ro', default => sub { 0 });
 
 # Internal Methods. ------------------------------------------------------------
+
+sub _build_handler {
+    my ($self) = @_;
+
+    if ($self->preferredRecordSyntax eq 'USMARC') {
+        Catmandu::Util::require_package('Catmandu::Importer::Z3950::Parser::USMARC')->new;
+    }
+    else {
+      return sub { return { record => $_[0] } };
+    }
+}
+ 
+sub _coerce_handler {
+  my ($handler) = @_;
+ 
+  return $handler if is_invocant($handler) or is_code_ref($handler);
+ 
+  if ($handler eq 'RAW') {
+      return sub { return { record => $_[0] } };
+  }
+  elsif (is_string($handler) && !is_number($handler)) {
+      my $class = $handler =~ /^\+(.+)/ ? $1
+        : "Catmandu::Importer::Z3950::Parser::$handler";
+ 
+      my $handler;
+      eval {
+          $handler = Catmandu::Util::require_package($class)->new;
+      };
+      if ($@) {
+        croak $@;
+      } else {
+        return $handler;
+      }
+  }
+  else {
+      die "unknown handler type $handler";
+  }
+}
 
 sub _setup_connection {
   my ($self) = @_;
@@ -90,7 +132,10 @@ sub _nextRecord {
   my $size = $self->_currentRecordSet->size() || 0;
 
   if ($self->{_n} < $size) {
-    return $self->_currentRecordSet->record($self->{_n}++)->get("raw");
+    my $rec = $self->_currentRecordSet->record($self->{_n}++)->get("raw");
+    return blessed($self->handler)
+         ? $self->handler->parse($rec)
+         : $self->handler->($rec);
   }
   else {
     $self->_clean;
@@ -135,36 +180,78 @@ sub generator {
 
 =head1 SYNOPSIS
 
+  
+  # On the command line
+
   use Catmandu::Importer::Z3950;
 
-  my %attrs = (
-    host => 'z3950.loc.gov',
-    port => 7090,
-    databaseName => "Voyager",
-    preferredRecordSyntax => "USMARC",
-    queryType => 'PQF', # CQL or PQF
-    query => '@attr 1=4 dinosaur'
-  );
+  $ catmandu convert Z3950 --host z3950.loc.gov --port 7090 --databaseName Voyager --query "(title = dinosaur)"
 
-  my $importer = Catmandu::Importer::Z3950->new(%attrs);
+  
+  # From Perl
+
+  use Catmandu;
+
+  my $importer = Catmandu->importer('Z3950'
+          host => 'z3950.loc.gov',
+          port => 7090,
+          databaseName => "Voyager",
+          preferredRecordSyntax => "USMARC",
+          queryType => 'PQF', # CQL or PQF
+          query => '@attr 1=4 dinosaur'
+  );
 
   my $n = $importer->each(sub {
     my $hashref = $_[0];
     ...
   });
 
-  print "DONE. ($n). \n";
-
-  `host`, `database` and `query` are required, `user` and `user` are optional.
-  `port`, `preferredRecordSyntax` and `queryType` will default to 210 'USMARC' and 'CQL' respectively.
-
 =cut
 
-=head1 REMARK
+=head1 CONFIGURAION
 
-Returns the raw response. So the output depends on the preferredRecordSyntax.
-You could use the MARC::Record package to parse the MARC output blob.
+=over
 
+=item host
+
+The Z3950 host name
+
+=item port
+
+The Z3950 port
+
+=item user
+
+A user name
+
+=item password
+
+A password 
+
+=item databaseName
+
+The database to connect to
+
+=item preferredRecordSyntax
+
+The preferred response format (default: USMARC)
+
+=item queryType
+
+The queryType (CQL or PQF)
+
+=item query 
+
+The query
+
+=item handler
+
+The Perl handler to parse the response content. This should be a package name in the Catmandu::Importer::Z3950::Parser namespace or 'RAW'
+for unparsed content.
+
+=back
+
+=head1 REQUIREMENTS
 
 This package uses the ZOOM package internally.
 For more info visit: http://search.cpan.org/~mirk/Net-Z3950-ZOOM-1.28/lib/ZOOM.pod
