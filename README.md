@@ -16,8 +16,12 @@ Version 0.04
 
 # AUTHOR
 
-- Wouter Willaert, `<wouterw@inuits.eu>`
-- Patrick Hochstenbach, `<patrick.hochstenbach@ugent.be>`
+- Wouter Willaert, `wouterw at inuits.eu>`
+- Patrick Hochstenbach, `patrick.hochstenbach at ugent.be>`
+
+# CONTRIBUTORS
+
+- Emmanuel Di Pretoro, `edipretoro at gmail.com`
 
 # LICENSE AND COPYRIGHT
 
