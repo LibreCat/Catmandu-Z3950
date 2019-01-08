@@ -1,6 +1,8 @@
 Revision history for Catmandu-Z3950
 
 {{$NEXT}}
+
+0.06  2019-01-08 09:41:10 CET
   - fixing UNIMARC processing (edipretoro)
   - fixing authentication issues (edipretoro)
   

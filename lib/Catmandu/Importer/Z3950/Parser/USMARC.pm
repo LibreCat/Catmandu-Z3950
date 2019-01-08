@@ -4,7 +4,7 @@ use Catmandu::Sane;
 use MARC::File::USMARC;
 use Moo;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 has 'id' => (is => 'ro' , default => sub { '001'} );
 
