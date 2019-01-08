@@ -84,15 +84,17 @@ sub _coerce_handler {
 sub _setup_connection {
   my ($self) = @_;
 
-  my $conn = ZOOM::Connection->new(
+	my $opts = ZOOM::Options->new();
+	$opts->option(databaseName => $self->databaseName);
+  $opts->option(preferredRecordSyntax => $self->preferredRecordSyntax) if $self->preferredRecordSyntax;
+  $opts->option(user => $self->user) if $self->user;
+  $opts->option(password => $self->password) if $self->password;
+
+	my $conn = ZOOM::Connection->create($opts);
+  $conn->connect(
     $self->host,
     $self->port,
-    databaseName => $self->databaseName
   );
-
-  $conn->option(preferredRecordSyntax => $self->preferredRecordSyntax) if $self->preferredRecordSyntax;
-  $conn->option(user => $self->user) if $self->user;
-  $conn->option(password => $self->password) if $self->password;
 
   return $conn;
 }
