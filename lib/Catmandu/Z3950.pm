@@ -28,9 +28,17 @@ our $VERSION = '0.05';
 
 =over
 
-=item * Wouter Willaert, C<< <wouterw@inuits.eu> >>
+=item * Wouter Willaert, C<< wouterw at inuits.eu> >>
 
-=item * Patrick Hochstenbach, C<< <patrick.hochstenbach@ugent.be> >>
+=item * Patrick Hochstenbach, C<< patrick.hochstenbach at ugent.be> >>
+
+=back
+
+=head1 CONTRIBUTORS
+
+=over
+
+=item * Emmanuel Di Pretoro, C<< edipretoro at gmail.com >>
 
 =back
 

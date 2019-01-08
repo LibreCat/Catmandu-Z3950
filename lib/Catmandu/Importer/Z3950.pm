@@ -53,19 +53,19 @@ sub _build_handler {
       return sub { return { record => $_[0] } };
     }
 }
- 
+
 sub _coerce_handler {
   my ($handler) = @_;
- 
+
   return $handler if is_invocant($handler) or is_code_ref($handler);
- 
+
   if ($handler eq 'RAW') {
       return sub { return { record => $_[0] } };
   }
   elsif (is_string($handler) && !is_number($handler)) {
       my $class = $handler =~ /^\+(.+)/ ? $1
         : "Catmandu::Importer::Z3950::Parser::$handler";
- 
+
       my $handler;
       eval {
           $handler = Catmandu::Util::require_package($class)->new;
@@ -115,11 +115,11 @@ sub _get_query {
 
 sub _nextRecord {
   my ($self) = @_;
- 
+
   unless ($self->_conn) {
     $self->_clean;
     $self->{_conn} = $self->_setup_connection;
-  } 
+  }
 
   unless ($self->_qry) {
     $self->_clean;
@@ -156,7 +156,7 @@ sub _clean {
 
 sub DESTROY {
   my ($self) = @_;
-  
+
   if ($self->_conn) {
      $self->_conn->destroy();
   }
@@ -185,7 +185,7 @@ sub generator {
   # On the command line
 
   $ catmandu convert Z3950 --host z3950.loc.gov --port 7090 --databaseName Voyager --query "(title = dinosaur)"
-  
+
   # From Perl
 
   use Catmandu;
@@ -224,7 +224,7 @@ A user name
 
 =item password
 
-A password 
+A password
 
 =item databaseName
 
@@ -238,14 +238,24 @@ The preferred response format (default: USMARC)
 
 The queryType (CQL or PQF)
 
-=item query 
+=item query
 
 The query
 
 =item handler
 
-The Perl handler to parse the response content. This should be a package name in the Catmandu::Importer::Z3950::Parser namespace or 'RAW'
-for unparsed content.
+The Perl handler to parse the response content. Examples are 'USMARC' and 'UNIMARC'
+
+   $ catmandu convert Z3950 \
+            --user 'XXX' \
+            --password 'XXX' \
+            --host z3950.bnf.fr \
+            --port 2211 \
+            --databaseName TOUT-ANA1-UTF8 \
+            --preferredRecordSyntax Unimarc \
+            --queryType PQF \
+            --query '@attr 1=7 9782744024191' \
+            --handler UNIMARC
 
 =back
 
@@ -268,6 +278,14 @@ Installing YAZ:
 =item * Wouter Willaert, C<< <wouterw@inuits.eu> >>
 
 =item * Patrick Hochstenbach, C<< <patrick.hochstenbach@ugent.be> >>
+
+=back
+
+=head1 CONTRIBUTORS
+
+=over
+
+=item * Emmanuel Di Pretoro, C<< edipretoro at gmail.com >>
 
 =back
 
