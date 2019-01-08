@@ -4,6 +4,8 @@ use Catmandu::Sane;
 use MARC::Parser::RAW;
 use Moo;
 
+our $VERSION = '0.05';
+
 has 'id' => (is => 'ro' , default => sub { '001'} );
 
 sub parse {
@@ -13,7 +15,7 @@ sub parse {
     return undef unless defined $str;
 
     my $record = MARC::Parser::RAW->new(\$str)->next();
-    
+
     foreach my $field (@$record) {
 	if ($field->[0] eq '001') {
 		$sysid = $field->[4];
