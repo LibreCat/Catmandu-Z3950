@@ -206,7 +206,7 @@ sub generator {
 
 =cut
 
-=head1 CONFIGURAION
+=head1 CONFIGURATION
 
 =over
 
@@ -262,14 +262,20 @@ The Perl handler to parse the response content. Examples are 'USMARC' and 'UNIMA
 =head1 REQUIREMENTS
 
 This package uses the ZOOM package internally.
-For more info visit: http://search.cpan.org/~mirk/Net-Z3950-ZOOM-1.28/lib/ZOOM.pod
+For more info visit: L<http://search.cpan.org/~mirk/Net-Z3950-ZOOM-1.28/lib/ZOOM.pod>
 
 The ZOOM package has a hard dependency on YAZ toolkit.
-For more info about YAZ, visit: https://www.indexdata.com/yaz
+For more info about YAZ, visit: L<https://www.indexdata.com/yaz>
 
 Installing YAZ:
-- (osx, using homebrew): brew install yaz
-- (linux, using yum): yum install yaz libyaz
+
+=over
+
+=item * (OS X, using Homebrew): C<brew install yaz>
+
+=item * (Linux, using yum): C<yum install yaz libyaz>
+
+=back
 
 =head1 AUTHOR
 
